@@ -16,6 +16,8 @@
         <th scope="col">Course Code</th>
         <th scope="col">Course Name</th>
         <th scope="col">Course Value</th>
+        <th scope="col">Semester</th>
+        <th scope="col">Year</th>
       </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -25,6 +27,8 @@
         <td>{{ course.course_code }}</td>
         <td>{{ course.name }}</td>
         <td>{{ course.course_value }}</td>
+        <td>{{ course.semester }}</td>
+        <td>{{ course.year }}</td>
       </tr>
       {% endfor %}
     </tbody>

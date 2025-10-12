@@ -18,6 +18,8 @@
         <th scope="col">Course Code</th>
         <th scope="col">Course Name</th>
         <th scope="col">Course Value</th>
+        <th scope="col">Semester</th>
+        <th scope="col">Year</th>
         <th scope="col">Course Instructor</th>
       </tr>
     </thead>
@@ -28,6 +30,8 @@
         <td>{{ course.course_code }}</td>
         <td>{{ course.name }}</td>
         <td>{{ course.course_value }}</td>
+        <td>{{ course.semester }}</td>
+        <td>{{ course.year }}</td>
         <td>{{ course.teacher.get_full_name }}</td>
       </tr>
       {% endfor %}

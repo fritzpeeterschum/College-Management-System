@@ -162,6 +162,8 @@ def adminAddCourse(request):
         name = request.POST['name']
         course_code = request.POST['course_code']
         course_value = request.POST['course_value']
+        semester = request.POST['semester']
+        year = request.POST['year']
         departmentId = request.POST.get('department')
         userId = request.POST.get('teacher')
         if not departmentId:
@@ -177,6 +179,8 @@ def adminAddCourse(request):
             name = name,
             course_code = course_code,
             course_value = course_value,
+            semester = semester,
+            year = year,
         )
         messages.success(request, "Course created successfully!")
         return redirect('/admin-courses')
@@ -187,7 +191,7 @@ def adminAddCourse(request):
     
 def adminEditCourse(request, courseId):
         admin_instance = Management.objects.get(user=request.user)
-        course = Courses.objects.get(id=courseId, teacher = request.user)
+        course = Courses.objects.get(id=courseId)
         departments = SchoolDepartment.objects.all()
         
         data = {
@@ -204,12 +208,16 @@ def adminUpdateCourse(request, courseId):
         name = request.POST['name']
         course_code = request.POST['course_code']
         course_value = request.POST['course_value']
+        semester = request.POST['semester']
+        year = request.POST['year']
         user_instance = User.objects.get(email = request.user.email)
 
-        course = Courses.objects.get(id = courseId, teacher = user_instance)
+        course = Courses.objects.get(id = courseId)
         course.name = name
         course.course_code = course_code
         course.course_value = course_value
+        course.semester = semester
+        course.year = year
         course.save()
         messages.success(request, "Course Updated Successfully!")
         return redirect(f'/admin-courses')
