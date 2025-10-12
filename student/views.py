@@ -2,7 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from .models import Student, Courses, SchoolDepartment
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from schoolManagement.models import Announcement
+from schoolManagement.models import Announcement, ExamManagement
 from student.models import Student
 User = get_user_model()
 
@@ -54,6 +54,7 @@ def studentAnnouncementDetail(request, ann_id):
         "announcement": announcement
     }
     return render(request, "student/announcementBody.html", context=data)
+
 
 def studentFeeManagement(request):
     return render(request, 'student/feesManagement.html')

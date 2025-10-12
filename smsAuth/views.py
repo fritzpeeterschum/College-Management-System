@@ -138,7 +138,7 @@ def managementUserAuthentication(request):
     
     if not User.objects.filter(username=username).exists():
         messages.success(request, "User does not exist.")
-        return redirect('/')
+        return redirect('/management-login')
     
     if User.objects.filter(username=username).exists():
         user = authenticate(request, username=username, password=password)
@@ -154,16 +154,16 @@ def managementUserAuthentication(request):
                 return redirect('/admin-profile')
             if user.status == "suspend":
                 messages.success(request, "Account Suspended.")
-                return redirect('/')
+                return redirect('/management-login')
             if user.status == "False":
                 messages.success(request, "User not found.")
-                return redirect('/')
+                return redirect('/management-login')
             else:
                 messages.success(request, "Incorrect username or password.")
-            return redirect('/')
+            return redirect('/management-login')
         else:
             messages.success(request, "Incorrect username or password.")
-            return redirect('/')
+            return redirect('/management-login')
 
 def studentUserLogout(request):
     logout(request)

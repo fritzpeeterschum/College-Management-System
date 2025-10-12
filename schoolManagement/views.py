@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
-from .models import Management, Courses, SchoolDepartment, Student, Announcement
+from .models import Management, Courses, SchoolDepartment, Student, Announcement, ExamManagement
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 User = get_user_model()

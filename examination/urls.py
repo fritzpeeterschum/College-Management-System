@@ -3,8 +3,9 @@ from examination import views
 
 
 urlpatterns = [
-    path('manage-exam', views.manageExam),
-    path('save-exam-results', views.saveExamResults),
-    path('edit-exam-results', views.editExamResults),
-    path('update-exam-results', views.updateExamResults),
+    path('teacher-exam-management', views.teacherExamManagement),
+    path('save-results', views.saveExamResults),
+    path('teacher-final-results', views.teacherFinalResults),
+    path('school-test-results', views.studentTestResults),
+    path('student-final-results', views.studentFinalResults),
 ]

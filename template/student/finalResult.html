@@ -1,8 +1,88 @@
 {% extends "student/base.html" %}
 {% load static %}
-
-{% block title %} Final Results {% endblock %}
+{% block title %}Final Result{% endblock %}
 
 {% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+  <br />
+  <h1 class="text-center">Final Result</h1>
+  <br />
 
+  <!-- Semester Selector -->
+  <div class="dropdown mb-3">
+    <button
+      class="btn btn-secondary dropdown-toggle"
+      type="button"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      {% if selected_semester %}
+        {{ selected_semester|title }} Semester
+      {% else %}
+        Select Semester
+      {% endif %}
+    </button>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="?semester=first">1st Semester</a></li>
+      <li><a class="dropdown-item" href="?semester=second">2nd Semester</a></li>
+      <li><a class="dropdown-item" href="?semester=third">3rd Semester</a></li>
+    </ul>
+  </div>
+
+  <!-- Results Table -->
+  {% if exam_instance %}
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Course Code</th>
+        <th>Course Name</th>
+        <th>Course Value</th>
+
+        {% if selected_semester == 'first' %}
+          <th>1st Sem Test / 30</th>
+          <th>1st Sem Exam / 70</th>
+          <th>1st Sem Total / 100</th>
+        {% elif selected_semester == 'second' %}
+          <th>2nd Sem Test / 30</th>
+          <th>2nd Sem Exam / 70</th>
+          <th>2nd Sem Total /100</th>
+        {% elif selected_semester == 'third' %}
+          <th>3rd Sem Test / 30</th>
+          <th>3rd Sem Exam / 70</th>
+          <th>3rd Sem Total / 100</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for exam in exam_instance %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ exam.course.course_code }}</td>
+        <td>{{ exam.course.name }}</td>
+        <td>{{ exam.course.course_value }}</td>
+
+        {% if selected_semester == 'first' %}
+          <td>{{ exam.first_semester_test_marks }}</td>
+          <td>{{ exam.first_semester_exam_marks }}</td>
+          <td>{{ exam.first_semester_test_marks|add:exam.first_semester_exam_marks }}</td>
+        {% elif selected_semester == 'second' %}
+          <td>{{ exam.second_semester_test_marks }}</td>
+          <td>{{ exam.second_semester_exam_marks }}</td>
+          <td>{{ exam.second_semester_test_marks|add:exam.second_semester_exam_marks }}</td>
+        {% elif selected_semester == 'third' %}
+          <td>{{ exam.third_semester_test_marks }}</td>
+          <td>{{ exam.third_semester_exam_marks }}</td>
+          <td>{{ exam.third_semester_test_marks|add:exam.third_semester_exam_marks }}</td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="alert alert-secondary" role="alert">
+    No exam records found!
+  </div>
+  {% endif %}
+</main>
 {% endblock %}

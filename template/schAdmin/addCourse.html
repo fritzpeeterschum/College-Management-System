@@ -63,6 +63,15 @@
         <a href="/admin-courses" class="btn btn-secondary">Back</a>
       </div>
     </form>
+    {% if messages %}
+                <div class="alert alert-primary" role="alert">
+                    {% for eachMessage in messages %}
+                    {{eachMessage}}
+                    {% endfor %}
+                </div>
+                {% else %}
+
+                {% endif %}
   </div>
 </div>
 </main>

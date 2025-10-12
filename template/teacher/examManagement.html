@@ -1,8 +1,70 @@
-{% extends "teacher/base.html" %}
-{% load static %}
+{% extends "teacher/base.html" %} 
 
-{% block title %} Exam Records {% endblock %}
+{% load static %} 
+{% block title %} Exam Records {% endblock %} 
 
 {% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+  <br />
+  <h1 class="text-center">Exams Management</h1>
+  <br />
+  <div>
+     <form method="POST" action="/save-results">
+        {% csrf_token %}
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Student Id</th>
+          <th scope="col">Student Name</th>
+          <th scope="col" style="width: 20%;">Course Name</th>
+          <th scope="col">1st Semester Test Marks / 30</th>
+          <th scope="col">1st Semester Exam Marks / 70</th>
+          <th scope="col">2nd Semester Test Marks / 30</th>
+          <th scope="col">2nd Semester Exam Marks / 70</th>
+          <th scope="col">3rd Semester Test Marks / 30</th>
+          <th scope="col">3rd Semester Exam Marks / 70</th>
+        </tr>
+      </thead>
+      {% if student_instance %}
+      {% for student in student_instance %}
+      <tbody class="table-group-divider">
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+          <td><input type="text" name="student" value="{{ student.id}}" class="form-control" readonly></td>
+          <td>{{student.user.first_name}} {{student.user.last_name}}</td>
+          <td><select name="course"  class="form-select" >
+          <option value="{{course_instance.name}}" disabled selected>-- Select Course --</option>
+          {% for course in course_instance %}
+          <option value="{{ course.id }}">{{ course.name }}</option>
+          {% endfor %}
+        </select></td>
+          <td><input type="text" name="first_semester_test" value="" class="form-control"></td>
+          <td><input type="text" name="first_semester_exam" value="" class="form-control"></td>
+          <td><input type="text" name="second_semester_test" value="" class="form-control"></td>
+          <td><input type="text" name="second_semester_exam" value="" class="form-control"></td>
+          <td><input type="text" name="third_semester_test" value="" class="form-control"></td>
+          <td><input type="text" name="third_semester_exam" value="" class="form-control"></td>
+        </tr>
+      </tbody>
+      {% endfor %}
+      {% else %}
+       <div class="alert alert-secondary" role="alert">
+            No exams record found!
+       </div>
+      {% endif %}
+    </table>
+    <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+     {% if messages %}
+                <div class="alert alert-primary" role="alert">
+                    {% for eachMessage in messages %}
+                    {{eachMessage}}
+                    {% endfor %}
+                </div>
+                {% else %}
 
+                {% endif %}
+  </div>
+</main>
 {% endblock %}

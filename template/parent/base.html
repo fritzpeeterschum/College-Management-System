@@ -310,46 +310,6 @@
         href="/parent-profile"
         >Parent Dashboard</a
       >
-      <ul class="navbar-nav flex-row d-md-none">
-        <li class="nav-item text-nowrap">
-          <button
-            class="nav-link px-3 text-white"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSearch"
-            aria-controls="navbarSearch"
-            aria-expanded="false"
-            aria-label="Toggle search"
-          >
-            <svg class="bi" aria-hidden="true">
-              <use xlink:href="#search"></use>
-            </svg>
-          </button>
-        </li>
-        <li class="nav-item text-nowrap">
-          <button
-            class="nav-link px-3 text-white"
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#sidebarMenu"
-            aria-controls="sidebarMenu"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <svg class="bi" aria-hidden="true">
-              <use xlink:href="#list"></use>
-            </svg>
-          </button>
-        </li>
-      </ul>
-      <div id="navbarSearch" class="navbar-search w-100 collapse">
-        <input
-          class="form-control w-100 rounded-0 border-0"
-          type="text"
-          placeholder="Search"
-          aria-label="Search"
-        />
-      </div>
     </header>
     <div class="container-fluid">
       <div class="row">
@@ -362,18 +322,6 @@
             id="sidebarMenu"
             aria-labelledby="sidebarMenuLabel"
           >
-            <div class="offcanvas-header">
-              <h5 class="offcanvas-title" id="sidebarMenuLabel">
-                Parent Dashboard
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="offcanvas"
-                data-bs-target="#sidebarMenu"
-                aria-label="Close"
-              ></button>
-            </div>
             <div
               class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto"
             >
@@ -382,8 +330,7 @@
                   <a
                     class="nav-link d-flex align-items-center gap-2 active"
                     aria-current="page"
-                    href="/parent-profile"
-                  >
+                    href="/parent-profile">
                   
                     Profile
                   </a>
