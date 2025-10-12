@@ -165,10 +165,15 @@ def managementUserAuthentication(request):
             messages.success(request, "Incorrect username or password.")
             return redirect('/')
 
-def userLogout(request):
+def studentUserLogout(request):
     logout(request)
     messages.success(request, "Logout successful")
     return redirect('/')
+
+def managementUserLogout(request):
+    logout(request)
+    messages.success(request, "Logout successful")
+    return redirect('/management-login')
 
 def resetPassword(request):
     return render(request, 'auth/resetPassword.html')

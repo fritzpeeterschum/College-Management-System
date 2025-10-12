@@ -11,7 +11,8 @@ urlpatterns = [
     path('management-user-auth', views.managementUserAuthentication),
     path('', views.studentUserLogin),
     path('management-login', views.managementUserLogin),
-    path('logout', views.userLogout),
+    path('student-logout', views.studentUserLogout),
+    path('management-logout', views.managementUserLogout),
     path('reset-password', views.resetPassword),
     path('reset-password-auth', views.resetPasswordAuth),
 
