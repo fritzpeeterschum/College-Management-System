@@ -59,6 +59,16 @@ def studentCourse(request):
     })
 
 def studentAttendance(request):
+    student_instance = Student.objects.get(user=User.objects.get(email=request.user.email))
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
     # Get student instance
     student = Student.objects.filter(user=request.user).select_related('department').first()
     if not student:
@@ -95,6 +105,9 @@ def studentAttendance(request):
         "student": student,
         "courses": courses,
         "selected_course_id": int(selected_course_id) if selected_course_id else None,
+        "current_semester":current_semester,
+        "current_year":current_year,
+        "student_instance":student_instance
     }
     return render(request, 'student/attendance.html', context)
 

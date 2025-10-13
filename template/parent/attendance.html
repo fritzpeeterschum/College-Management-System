@@ -1,8 +1,66 @@
 {% extends "parent/base.html" %}
 {% load static %}
 
-{% block title %} Attendance {% endblock %}
+{% block title %} Student Attendance {% endblock %}
 
 {% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div class="container mt-1">
+        <div class="card shadow-lg rounded-3">
+            <div class="card-body">
+                <h2>Attendance records for {{ parent_instance.parent_of.user.first_name }} {{ parent_instance.parent_of.user.last_name }}</h2>
 
+                <form method="get" class="mb-3">
+                    <label for="course_id">Filter by Course:</label>
+                    <select name="course_id" id="course_id" onchange="this.form.submit()">
+                        <option value="">-- All Courses --</option>
+                        {% for record in attendance_instance %}
+                        <option value="{{ record.course.id }}" {% if selected_course_id == record.course.id %}selected{% endif %}>
+                            {{ record.course.course_code }} - {{ record.course.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                </form>
+
+                <table border="2" cellpadding="50" cellspacing="10" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Course code</th>
+                        <th scope="col">Courses</th>
+                        <th scope="col">Teacher</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Date</th>
+                    </tr>
+                    </thead>
+                    {% for record in attendance_instance %}
+                    <tbody>
+                    <tr>
+                        
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ record.course.course_code }}</td>
+                        <td>{{ record.course.name }}</td>
+                        <td>{{ record.course.teacher.first_name }} {{ course.teacher.last_name }}</td>
+                        
+                        <td>
+                            {% if record.status == 'Present' %}
+                            <span class="badge bg-success">Present</span>
+                            {% else %}
+                            <span class="badge bg-danger">Absent</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ record.date }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">No attendance records found.</td>
+                    </tr>
+                    </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
 {% endblock %}

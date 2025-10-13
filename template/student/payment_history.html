@@ -1,0 +1,24 @@
+{% extends "student/base.html" %}
+{% load static %}
+
+{% block title %} Fee Management {% endblock %}
+{% block content %}
+{% if payment_instance %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+<br>
+<h1>Fee Payment History</h1>
+    <ul class="list-group">
+      {% for payment in payment_instance %}
+      <li class="list-group-item">{{payment.amount}} fee payment successful {{payment.created_at | timesince}} ago.</li> 
+      {% endfor %}
+</ul>
+  {% else %}
+
+  <div class="alert alert-primary" role="alert">
+ 
+    {{messages}}
+
+</div>
+</main>
+  {% endif %}
+{% endblock %}
