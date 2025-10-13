@@ -24,20 +24,25 @@
                 </form>
 
                 <table border="2" cellpadding="50" cellspacing="10" class="table table-striped">
+                    <thead>
                     <tr>
-                        <th>Course code</th>
-                        <th>Courses</th>
-                        <th>Teacher</th>
-                        <th>Status</th>
-                        <th>Date</th>
+                        <th scope="col">#</th>
+                        <th scope="col">Course code</th>
+                        <th scope="col">Courses</th>
+                        <th scope="col">Teacher</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Date</th>
                     </tr>
+                    </thead>
                     {% for record in attendance_record %}
+                    <tbody>
                     <tr>
-                        {% for course in courses %}
-                        <td>{{ course.course_code }}</td>
-                        <td>{{ course.name }}</td>
-                        <td>{{ course.teacher.first_name }} {{ course.teacher.last_name }}</td>
-                        {% endfor %}
+                        
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ record.course.course_code }}</td>
+                        <td>{{ record.course.name }}</td>
+                        <td>{{ record.course.teacher.first_name }} {{ course.teacher.last_name }}</td>
+                        
                         <td>
                             {% if record.status == 'Present' %}
                             <span class="badge bg-success">Present</span>
@@ -47,11 +52,11 @@
                         </td>
                         <td>{{ record.date }}</td>
                     </tr>
-
                     {% empty %}
                     <tr>
                         <td colspan="3">No attendance records found.</td>
                     </tr>
+                    </tbody>
                     {% endfor %}
                 </table>
             </div>

@@ -2,7 +2,35 @@
 {% load static %}
 
 {% block title %} Fee Management {% endblock %}
-
 {% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <br>
+    <h1>Fee Payment</h1>
+    <form method="POST" action="/make-payment">
+        {% csrf_token %}
+  <div class="mb-3">
+    <label for="amount" class="form-label">Fee Amount</label>
+    <input type="number" name="amount" class="form-control">
+  </div>
+  <div class="mb-3">
+  <label for="payment method" class="form-label">Payment Method</label>
+  <select class="form-select" name="payment_method">
+  <option selected> --select payment method-- </option>
+  <option value="1">Mobile Money</option>
+  <option value="2">Orange Money</option>
+  <option value="3">Bank Transfer</option>
+</select>
+</div>
+{% if messages %}
+                <div class="alert alert-primary" role="alert">
+                    {% for eachMessage in messages %}
+                    {{eachMessage}}
+                    {% endfor %}
+                </div>
+                {% else %}
 
+                {% endif %}
+  <button type="submit" class="btn btn-primary">Pay now</button>
+</form>
+</main>
 {% endblock %}

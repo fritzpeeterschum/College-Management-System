@@ -1,8 +1,90 @@
 {% extends "teacher/base.html" %}
 {% load static %}
 
-{% block title %} Exam Records {% endblock %}
+{% block title %}Exam Management{% endblock %}
 
 {% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+  <h1>Exam Management</h1>
 
+  <form method="POST" action="/fetch-course-semesters" class="d-flex">
+      {% csrf_token %}
+      <div class="mb-3" style="margin-right: 2%;">
+          <label for="year" class="form-label">Select Year:</label>
+          <select name="year" id="year" class="form-select">
+              <option value="">-- Select Year --</option>
+              <option value="First Year">First Year</option>
+              <option value="Second Year">Second Year</option>
+              <option value="Third Year">Third Year</option>
+              <option value="Fourth Year">Fourth Year</option>
+          </select>
+      </div>
+
+      <div class="mb-3" style="margin-right: 2%;">
+          <label for="semester" class="form-label">Select Semester:</label>
+          <select name="semester" id="semester" class="form-select">
+              <option value="">-- Select Semester --</option>
+              <option value="First Semester">First Semester</option>
+              <option value="Second Semester">Second Semester</option>
+              <option value="Third Semester">Third Semester</option>
+          </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="height: 20%; margin-top: 3%;">Fetch Courses</button>
+  </form>
+
+  <hr>
+  
+  {% if course_instance %}
+      <h3>Courses for First year and first semester</h3>
+
+      {% for course in course_instance %}
+       <form method="POST" action="/save-results">
+        {% csrf_token %}
+          <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Student Id</th>
+      <th scope="col">Student Name</th>
+      <th scope="col">Course code</th>
+      <th scope="col">Course Id</th>
+      <th scope="col">Course name</th>
+      <th scope="col">1st Sem Test</th>
+      <th scope="col">1st Sem Exam</th>
+    </tr>
+  </thead>
+  {% if student_instance %}
+  {% for student in student_instance %}
+  <tbody>
+    <tr>
+      <th scope="row">{{ forloop.counter }}</th>
+      <td><input type="text" name="student" value="{{ student.id}}" class="form-control"readonly></td>
+      <td>{{student.user.first_name}} {{student.user.last_name}}</td>
+      <td>{{course.course_code}}</td>
+      <td><input type="text" name="course" value="{{ course.id}}" class="form-control" readonly></td>
+      <td>{{course.name}}</td>
+      <td><input type="text" name="first_semester_test" value="" class="form-control"></td>
+      <td><input type="text" name="first_semester_exam" value="" class="form-control"></td>
+    </tr>
+  </tbody>
+  {% endfor%}
+  {% endif %}
+</table>
+      {% endfor %}
+       <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+  {% else %}
+      <p>No courses found for the selected year and semester.</p>
+  {% endif %}
+   {% if messages %}
+                <div class="alert alert-primary" role="alert">
+                    {% for eachMessage in messages %}
+                    {{eachMessage}}
+                    {% endfor %}
+                </div>
+                {% else %}
+
+                {% endif %}
+</main>
 {% endblock %}

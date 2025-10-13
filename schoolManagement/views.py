@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
-from .models import Management, Courses, SchoolDepartment,Attendance, Announcement
+from .models import Management, Courses, SchoolDepartment, Student, Announcement, Attendance
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -8,14 +8,24 @@ from django.utils import timezone
 from student.models import Student, Courses
 from datetime import datetime
 
-
 # Create your views here.
 def teacherProfile(request):
     user_instance = User.objects.get(email=request.user.email)  # now using custom user
     teacher_instance = Management.objects.get(user=user_instance)
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
 
     data = {
-        "teacher_instance": teacher_instance
+        "teacher_instance": teacher_instance,
+        "current_semester": current_semester,
+        "current_year":current_year
     }
 
     return render(request, 'teacher/profile.html', context=data)
@@ -24,6 +34,15 @@ def teacherCourse(request):
      department_id = request.GET.get('department')
      courses = Courses.objects.filter(teacher = request.user)
      teacher_instance = Management.objects.get(user=User.objects.get(email=request.user.email))
+     current_month = datetime.now().month
+     current_year = datetime.now().year
+
+     if 1 <= current_month <= 4:
+        current_semester = 'first'
+     elif 5 <= current_month <= 8:
+        current_semester = 'second'
+     else:
+        current_semester = 'third'
      if department_id:
          courses = courses.filter(department_id=department_id)
 
@@ -33,23 +52,47 @@ def teacherCourse(request):
          "courses": courses,
          "departments": departments,
          "selectedDepartment": department_id,
-         "teacher_instance": teacher_instance
+         "teacher_instance": teacher_instance,
+         "current_semester":current_semester,
+         "current_year":current_year
          })
 
 def adminCourse(request):
     courses = Courses.objects.all()
     admin_instance = Management.objects.get(user=User.objects.get(email=request.user.email))
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
     return render(request, 'schAdmin/courses.html', {
         "courses": courses,
-        "admin_instance": admin_instance
+        "admin_instance": admin_instance,
+        "current_semester":current_semester,
+        "current_year":current_year
     })
 
 def adminDepartments(request):
     departments = SchoolDepartment.objects.all()
     admin_instance = Management.objects.get(user=User.objects.get(email=request.user.email))
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
     return render(request, 'schAdmin/departments.html', {
         "departments": departments,
-        "admin_instance": admin_instance
+        "admin_instance": admin_instance,
+        "current_semester":current_semester,
+        "current_year":current_year
     })
 
 
@@ -185,9 +228,20 @@ def teacherAnnouncement(request):
         return redirect('/teacher-announcement')
 
     announcements = Announcement.objects.filter(user=teacher_instance, status=True).order_by('-created_at')
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
     data = {
         "teacher_instance": teacher_instance,
-        "announcements": announcements
+        "announcements": announcements,
+        "current_semester":current_semester,
+        "current_year":current_year
     }
     return render(request, "teacher/announcement.html", context=data)
 
@@ -195,9 +249,20 @@ def teacherAnnouncementDetail(request, ann_id):
     user_instance = User.objects.get(email=request.user.email)
     teacher_instance = Management.objects.get(user=user_instance)
     announcement = get_object_or_404(Announcement, id=ann_id,user=teacher_instance, status=True)
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
     data={
         "teacher_instance": teacher_instance,
-        "announcement": announcement
+        "announcement": announcement,
+        "current_semester":current_semester,
+        "current_year":current_year
     }
     return render(request, "teacher/announcementBody.html", context=data)
 def editTeacherAnnouncement(request, ann_id):
@@ -233,10 +298,22 @@ def deleteTeacherAnnouncement(request, ann_id):
         announcement.save()
         messages.success(request, "Announcement deleted successfully!")
         return redirect('/teacher-announcement')
+    
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
 
     data = {
         "teacher_instance": teacher_instance,
-        "announcement": announcement
+        "announcement": announcement,
+        "current_semester":current_semester,
+        "current_year":current_year
     }
     return render(request, 'teacher/deleteAnnouncement.html', context=data)
 
@@ -244,10 +321,21 @@ def deleteTeacherAnnouncement(request, ann_id):
 def teacherEditProfile(request,teacher_id):
     user_instance = User.objects.get(email=request.user.email)  
     teacher_instance = Management.objects.get(user=user_instance)
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
 
     data = {
         "teacher_instance": teacher_instance,
-        "teacher_id" : teacher_id
+        "teacher_id" : teacher_id,
+        "current_semester":current_semester,
+        "current_year":current_year
     }
     return render(request, 'teacher/editProfile.html',context=data)
 
@@ -307,12 +395,31 @@ def adminAddCourse(request):
     else:
         departments = SchoolDepartment.objects.all()
         teachers = User.objects.filter(is_teacher = True)
-        return render(request, "schAdmin/addCourse.html", {"departments": departments, "teachers": teachers})    
+        current_month = datetime.now().month
+        current_year = datetime.now().year
+
+        if 1 <= current_month <= 4:
+            current_semester = 'first'
+        elif 5 <= current_month <= 8:
+            current_semester = 'second'
+        else:
+            current_semester = 'third'
+        return render(request, "schAdmin/addCourse.html", {"departments": departments, "teachers": teachers,  "current_semester":current_semester,
+        "current_year":current_year})    
     
 def adminEditCourse(request, courseId):
         admin_instance = Management.objects.get(user=request.user)
         course = Courses.objects.get(id=courseId)
         departments = SchoolDepartment.objects.all()
+        current_month = datetime.now().month
+        current_year = datetime.now().year
+
+        if 1 <= current_month <= 4:
+            current_semester = 'first'
+        elif 5 <= current_month <= 8:
+            current_semester = 'second'
+        else:
+            current_semester = 'third'
         
         data = {
             "admin_instance": admin_instance,
@@ -320,6 +427,8 @@ def adminEditCourse(request, courseId):
             "courseId": courseId,
             "course": course,
             'departments': departments,
+            "current_semester":current_semester,
+            "current_year":current_year
         }
         return render(request, "schAdmin/editCourse.html", context=data)    
 
@@ -340,7 +449,7 @@ def adminUpdateCourse(request, courseId):
         course.year = year
         course.save()
         messages.success(request, "Course Updated Successfully!")
-        return redirect(f'/admin-courses')
+        return redirect('/admin-courses')
     else:
         messages.error(request, "Failed To Update Course")
         return redirect(f'/edit-admin-course/{courseId}')
@@ -351,13 +460,24 @@ def adminDeleteCourse(request, courseId):
 
 def adminAddDepartments(request):
     admin_instance = Management.objects.get(user=User.objects.get(email=request.user.email))
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+            current_semester = 'first'
+    elif 5 <= current_month <= 8:
+            current_semester = 'second'
+    else:
+            current_semester = 'third'
     if request.method == 'POST':
         name = request.POST.get('name')
         if name:
             SchoolDepartment.objects.create(name=name)
             return redirect('/admin-departments')
     return render(request, 'schAdmin/addDepartment.html', {
-        "admin_instance": admin_instance
+        "admin_instance": admin_instance,
+        "current_semester":current_semester,
+        "current_year":current_year
     })
 
 def adminEditDepartments(request, id):
@@ -382,9 +502,20 @@ def adminDeleteDepartments(request, id):
 def adminProfile(request):
     user_instance = User.objects.get(email=request.user.email)  # now using custom user
     admin_instance = Management.objects.get(user=user_instance)
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
 
     data = {
-        "admin_instance": admin_instance
+        "admin_instance": admin_instance,
+        "current_semester":current_semester,
+        "current_year":current_year
     }
     return render(request, 'schAdmin/profile.html', context=data)
 
@@ -395,18 +526,43 @@ def adminUserManagement(request):
         current_user = request.user
         all_users = User.objects.filter(status = True).exclude(pk = current_user.pk)
         active_users = True
+
+        current_month = datetime.now().month
+        current_year = datetime.now().year
+
+        if 1 <= current_month <= 4:
+            current_semester = 'first'
+        elif 5 <= current_month <= 8:
+            current_semester = 'second'
+        else:
+            current_semester = 'third'
+
         data = {
             "all_users": all_users,
             "active_users": active_users,
-            "admin_instance": admin_instance
+            "admin_instance": admin_instance,
+            "current_semester":current_semester,
+            "current_year":current_year
         }
         return render(request, 'schAdmin/userManagement.html', context=data)
     
 def adminDeleteConfirmationPage(request, delete_id):
     fetchedUser = User.objects.get(id = delete_id)
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
+
     if fetchedUser:
         data = {
             "fetchedUser": fetchedUser,
+            "current_semester":current_semester,
+            "current_year":current_year
         }
         return render(request, 'schAdmin/deleteConfirmationPage.html', context=data)
     else:
@@ -415,9 +571,21 @@ def adminDeleteConfirmationPage(request, delete_id):
 
 def adminSuspendConfirmationPage(request, suspend_id):
     fetchedUser = User.objects.get(id = suspend_id)
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
+
     if fetchedUser:
         data = {
             "fetchedUser": fetchedUser,
+            "current_semester":current_semester,
+            "current_year":current_year
         }
         return render(request, 'schAdmin/suspendConfirmationPage.html', context=data)
     else:
@@ -426,9 +594,21 @@ def adminSuspendConfirmationPage(request, suspend_id):
     
 def adminActivateConfirmationPage(request, activate_id):
     fetchedUser = User.objects.get(id = activate_id)
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
+
     if fetchedUser:
         data = {
             "fetchedUser": fetchedUser,
+            "current_semester":current_semester,
+            "current_year":current_year
         }
         return render(request, 'schAdmin/activateConfirmationPage.html', context=data)
     else:
@@ -450,9 +630,21 @@ def adminDeletedUsers(request):
         current_user = request.user
         all_users = User.objects.filter(status = False).exclude(pk = current_user.pk)
         all_deleted_users = True
+        current_month = datetime.now().month
+        current_year = datetime.now().year
+
+        if 1 <= current_month <= 4:
+            current_semester = 'first'
+        elif 5 <= current_month <= 8:
+            current_semester = 'second'
+        else:
+            current_semester = 'third'
+
         data = {
             "all_users": all_users,
-            "all_deleted_users": all_deleted_users
+            "all_deleted_users": all_deleted_users,
+            "current_semester":current_semester,
+            "current_year":current_year 
         }
         return render(request, 'schAdmin/userManagement.html', context=data)
     
@@ -481,19 +673,42 @@ def adminSuspendedUsers(request):
         current_user = request.user
         all_users = User.objects.filter(status = "suspend").exclude(pk = current_user.pk)
         all_suspended_users = True
+        current_month = datetime.now().month
+        current_year = datetime.now().year
+
+        if 1 <= current_month <= 4:
+            current_semester = 'first'
+        elif 5 <= current_month <= 8:
+            current_semester = 'second'
+        else:
+            current_semester = 'third'
+
         data = {
             "all_users": all_users,
-            "all_suspended_users": all_suspended_users
+            "all_suspended_users": all_suspended_users,
+            "current_semester":current_semester,
+            "current_year":current_year 
         }
         return render(request, 'schAdmin/userManagement.html', context=data)
 
 def adminEditProfile(request,admin_id):
     user_instance = User.objects.get(email=request.user.email)  # now using custom user
     admin_instance = Management.objects.get(user=user_instance)
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
 
     data = {
         "admin_instance": admin_instance,
-        "admin_id" : admin_id
+        "admin_id" : admin_id,
+        "current_semester":current_semester,
+        "current_year":current_year
     }
     return render(request, 'schAdmin/editProfile.html',context=data)
 

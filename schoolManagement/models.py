@@ -9,9 +9,10 @@ class Management(models.Model):
     address = models.CharField(max_length=100,null=False,blank=True)
     employee_number = models.CharField(max_length=100,null=False,blank=True)
     marital_status = models.CharField(max_length=100,null=False,blank=True)
-    DOB = models.CharField(max_length=30,null=False,blank=True)
+    DOB = models.DateField(max_length=30,null=False,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
 
 class Announcement(models.Model):
     user = models.ForeignKey(Management, on_delete=models.CASCADE, related_name="user_announcement")
@@ -21,6 +22,24 @@ class Announcement(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     status = models.BooleanField(default=True)
 
+class ExamManagement(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="user_examManagement")
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, related_name="user_courses")
+    first_semester_test_marks = models.CharField(max_length=20, null=False, blank=True)
+    first_semester_exam_marks = models.CharField(max_length=20, null=False, blank=True)
+    second_semester_test_marks = models.CharField(max_length=20, null=False, blank=True)
+    second_semester_exam_marks = models.CharField(max_length=20, null=False, blank=True)
+    third_semester_test_marks = models.CharField(max_length=20, null=False, blank=True)
+    third_semester_exam_marks = models.CharField(max_length=20, null=False, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    status = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ('student', 'course')  # one row per student per course
+
+    def __str__(self):
+        return f"{self.student.name} - {self.course.name}"
 
 class Attendance(models.Model):
     STATUS_CHOICES = [
@@ -39,4 +58,3 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"{self.student.user.get_full_name()} - {self.course.name} ({self.status})"
-    
