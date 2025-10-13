@@ -4,12 +4,20 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from schoolManagement.models import *
 from student.models import *
+from parent.models import *
 from django.contrib.auth import authenticate, login, logout
 
 
 # Create your views here.
 def createManageAccount(request):
     return render(request, 'auth/createManagementAccount.html')
+
+def createParentAccount(request):
+    student_instance = Student.objects.all
+    data = {
+        "student_instance":student_instance 
+    }
+    return render(request, 'auth/createParentAccount.html', context=data)
 
 def createStudentAccount(request):
     department_instance = SchoolDepartment.objects.all()
@@ -94,6 +102,42 @@ def createStudentAccountAuth(request):
     else:
         messages.success(request, "Something went wrong")
         return redirect('/create-student-account')
+    
+@transaction.atomic
+def createParentAccountAuth(request):
+    if request.method == "POST":
+        firstname = request.POST['fname']
+        lastname = request.POST['lname']
+        email = request.POST['email']
+        username = request.POST['username']
+        password = request.POST['password']
+        parent_of = request.POST['parent_of']
+        address = request.POST['address']
+        is_parent = True
+    
+    if User.objects.filter(email = email).exists():
+        messages.success(request, "User already exist.")
+        return redirect('/create-parent-account')
+    
+    if not User.objects.filter(email = email).exists():
+        newUserInstance = User.objects.create_user(username = username, password = password, email = email, first_name = firstname, last_name = lastname, is_parent = is_parent)
+        student = Student.objects.get(id = parent_of)
+        if newUserInstance:
+            newUserInstance.save()
+            newParentInstance = Parent(user = newUserInstance)
+            newParentInstance.address = address
+            newParentInstance.parent_of = student
+            newParentInstance.save()
+            messages.success(request, "Account created successfully")
+            return redirect('/create-parent-account')
+        
+        else:
+            messages.success(request, "Something went wrong")
+            return redirect('/create-parent-account')
+        
+    else:
+        messages.success(request, "Something went wrong")
+        return redirect('/create-parent-account')
         
 
 def studentUserLogin(request):

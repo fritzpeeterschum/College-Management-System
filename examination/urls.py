@@ -8,4 +8,5 @@ urlpatterns = [
     path('teacher-final-results', views.teacherFinalResults),
     path('school-test-results', views.studentTestResults),
     path('student-final-results', views.studentFinalResults),
+    path('fetch-course-semesters', views.fetchCourseSemesters),
 ]

@@ -14,9 +14,9 @@
   <br>
   <h1 class="text-center text-primary">Welcome to SMS</h1>
   
-<h2 class="text-center text-primary">Create Management Account</h2>
+<h2 class="text-center text-primary">Create Parent Account</h2>
 <br>
-<form method="POST" action="/create-management-account-auth" autocomplete="off" style="padding-left: 120px; padding-right: 120px;">
+<form method="POST" action="/create-parent-account-auth" autocomplete="off" style="padding-left: 120px; padding-right: 120px;">
   {% csrf_token %}
   <div class="mb-3">
     <label class="form-label">First Name</label>
@@ -31,17 +31,18 @@
     <input type="email" name="email" placeholder="Enter email address" class="form-control" required>
   </div>
   <div class="mb-3">
-    <label class="form-label">Employee Number/Username</label>
-    <input type="text" name="username" placeholder="Employee Number/ username" class="form-control" required>
+    <label class="form-label">Username</label>
+    <input type="text" name="username" placeholder="Enter username" class="form-control" required>
   </div>
-   <div class="mb-3">
-    <label class="form-label">DOB</label>
-    <input type="text" name="dob" placeholder="YYYY-MM-DD" class="form-control" required>
-  </div>
-   <div class="mb-3">
-    <label class="form-label">Marital Status</label>
-    <input type="text" name="marital_status" placeholder="Enter marital status" class="form-control" required>
-  </div>
+    <div class="mb-3">
+        <label class="form-label">Parent of</label>
+        <select name="parent_of" class="form-select" required>
+          <option value="" selected>-- Select Student --</option>
+          {% for student in student_instance %}
+          <option value="{{ student.id }}">{{ student.user.first_name }} {{ student.user.last_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
   <div class="mb-3">
     <label class="form-label">Home Address</label>
     <input type="text" name="address" placeholder="Enter home address" class="form-control" required>

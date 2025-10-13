@@ -47,12 +47,8 @@
               <th>{{ forloop.counter }}</th>
               <td>{{ exam.student.user.first_name }} {{ exam.student.user.last_name }}</td>
               <td>{{ exam.course.name }}</td>
-              <td>{{ exam.first_semester_test_marks|default:"-" }}</td>
-              <td>{{ exam.first_semester_exam_marks|default:"-" }}</td>
-              <td>{{ exam.second_semester_test_marks|default:"-" }}</td>
-              <td>{{ exam.second_semester_exam_marks|default:"-" }}</td>
-              <td>{{ exam.third_semester_test_marks|default:"-" }}</td>
-              <td>{{ exam.third_semester_exam_marks|default:"-" }}</td>
+              <td>{{ exam.first_semester_test_marks }}</td>
+              <td>{{ exam.first_semester_exam_marks}}</td>
           </tr>
           {% endfor %}
       </tbody>

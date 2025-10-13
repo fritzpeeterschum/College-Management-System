@@ -5,19 +5,41 @@ from django.contrib.auth import get_user_model
 from schoolManagement.models import Announcement, ExamManagement
 from student.models import Student
 User = get_user_model()
+from datetime import datetime
 
 
 # Create your views here.
 def studentProfile(request):
     student_instance = Student.objects.get(user=User.objects.get(email=request.user.email))
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
+
     data = {
-        "student_instance": student_instance
+        "student_instance": student_instance,
+        "current_semester":current_semester,
+        "current_year":current_year
     }
     return render(request, 'student/profile.html', context=data) 
 
 def studentCourse(request):
     student = Student.objects.filter(user=request.user).first()
     student_instance = Student.objects.get(user=User.objects.get(email=request.user.email))
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
     
     if not student:
         return render(request, 'student/courses.html', {
@@ -30,7 +52,9 @@ def studentCourse(request):
     return render(request, 'student/courses.html', {
         "student": student,
         "courses": courses,
-        "student_instance": student_instance
+        "student_instance": student_instance,
+        "current_semester":current_semester,
+        "current_year":current_year
     })
 
 def studentAttendance(request):
@@ -40,18 +64,42 @@ def studentAnnouncement(request):
     user_instance = User.objects.get(email=request.user.email)
     student_instance = Student.objects.get(user=user_instance)
     announcements = Announcement.objects.filter(status=True).order_by('-created_at')
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
     data={
         "student_instance": student_instance,
-        "announcements": announcements}
+        "announcements": announcements,
+        "current_semester":current_semester,
+        "current_year":current_year
+        }
     return render(request, 'student/announcement.html', context=data)
 
 def studentAnnouncementDetail(request, ann_id):
     user_instance = User.objects.get(email=request.user.email)
     student_instance = Student.objects.get(user=user_instance)
     announcement = get_object_or_404(Announcement, id=ann_id, status=True)
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
+
     data={
         "student_instance": student_instance,
-        "announcement": announcement
+        "announcement": announcement,
+        "current_semester":current_semester,
+        "current_year":current_year
     }
     return render(request, "student/announcementBody.html", context=data)
 
@@ -65,9 +113,21 @@ def finalResults(request):
 def editProfile(request, student_id):
     user_instance = User.objects.get(email = request.user.email)
     student_instance = Student.objects.get(user = user_instance)
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    if 1 <= current_month <= 4:
+        current_semester = 'first'
+    elif 5 <= current_month <= 8:
+        current_semester = 'second'
+    else:
+        current_semester = 'third'
+
     data = {
         "student_instance": student_instance,
-        "student_id": student_id
+        "student_id": student_id,
+        "current_semester":current_semester,
+        "current_year":current_year
     }
     return render(request, 'student/editProfile.html', context=data)
 
