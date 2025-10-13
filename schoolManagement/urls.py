@@ -2,10 +2,19 @@ from django.urls import path
 from schoolManagement import views
 
 
+
 urlpatterns = [
     path('teacher-profile', views.teacherProfile),
     path('teacher-courses', views.teacherCourse),
-    path('teacher-attendance', views.teacherAttendance),
+    # Dashboard view (list all courses)
+    path('teacher-attendance/', views.teacherAttendanceDashboard),
+    path('attendance-history/', views.attendanceHistory),
+        # Edit specific attendance record
+    path("teacher-attendance/edit/<int:record_id>/", views.editAttendanceRecord), 
+    # path('update-attendance-record', views.updateAttendanceRecord),
+    path("teacher-attendance/delete/<int:record_id>/", views.deleteAttendanceRecord),
+    # Course-specific attendance marking page
+    path('teacher-attendance/<int:course_id>/', views.teacherAttendance),
     path('teacher-announcement', views.teacherAnnouncement),
     path('teacher-announcement/<int:ann_id>/', views.teacherAnnouncementDetail),
     path('teacher-announcement/edit/<int:ann_id>/', views.editTeacherAnnouncement),
@@ -21,7 +30,6 @@ urlpatterns = [
     path('admin-courses-delete/<int:courseId>', views.adminDeleteCourse),
     path('update-admin-course/<int:courseId>', views.adminUpdateCourse),
     path('admin-courses', views.adminCourse),
-    path('update-attendance-record', views.updateAttendanceRecord),
     path('admin-profile', views.adminProfile),
     path('admin-user-management', views.adminUserManagement),
     path('edit-admin-profile/<int:admin_id>', views.adminEditProfile),
@@ -36,3 +44,6 @@ urlpatterns = [
     path('admin-suspend-confirmation-page/<int:suspend_id>', views.adminSuspendConfirmationPage),
 
 ]
+
+
+    

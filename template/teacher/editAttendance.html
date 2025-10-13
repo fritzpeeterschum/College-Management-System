@@ -1,0 +1,40 @@
+{% extends "teacher/base.html" %}
+{% load static %}
+
+{% block title %}Edit Attendance{% endblock %}
+
+{% block content %}
+
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div class="container mt-4">
+        <div class="card shadow-lg rounded-3">
+            <div class="card-body">
+                <h3>Edit Attendance for {{ record.student.user.first_name }} {{ record.student.user.last_name }}</h3>
+                <p><strong>Course:</strong> {{ record.course.name }}</p>
+                <p><strong>Date:</strong> {{ record.date|date:"M d, Y" }}</p>
+
+                <form method="post" action="/teacher-attendance/edit/{{ record.id }}/">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="Present" {% if record.status == "Present" %}selected{% endif %}>Present
+                            </option>
+                            <option value="Absent" {% if record.status == "Absent" %}selected{% endif %}>Absent</option>
+                            <option value="Late" {% if record.status == "Late" %}selected{% endif %}>Late</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="note" class="form-label">Note (optional)</label>
+                        <textarea name="note" id="note" class="form-control">{{ record.note }}</textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    <a href="/attendance-history/" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
