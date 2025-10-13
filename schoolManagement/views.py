@@ -1,10 +1,12 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
-from .models import Management, Courses, SchoolDepartment, Student, Announcement, ExamManagement
+from .models import Management, Courses, SchoolDepartment, Student, Announcement, Attendance
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 User = get_user_model()
-from datetime import datetime
 
+from django.utils import timezone
+from student.models import Student, Courses
+from datetime import datetime
 
 # Create your views here.
 def teacherProfile(request):
@@ -93,8 +95,124 @@ def adminDepartments(request):
         "current_year":current_year
     })
 
-def teacherAttendance(request):
-    return render(request, 'teacher/attendance.html')
+
+def teacherAttendanceDashboard(request):
+    user_instance = User.objects.get(email=request.user.email)
+    courses = Courses.objects.filter(teacher=user_instance)  # Use User, not Management
+    # Create a dictionary: course -> students enrolled in that course
+    course_students = {course: course.students.all() for course in courses}
+    data = {
+        "teacher_instance": user_instance,
+        "courses": courses,
+        "course_students": course_students
+    }
+    return render(request, "teacher/attendanceDashboard.html", context=data)
+
+
+def teacherAttendance(request, course_id):
+    teacher_instance = User.objects.get(email=request.user.email)  # The teacher marking attendance
+    course = get_object_or_404(Courses, id=course_id, teacher=teacher_instance)
+    # Fetch all students in this course
+    students = Student.objects.filter(department=course.department)
+    # Handle date filter
+    today = timezone.now().date()
+    date_str = request.GET.get("date")
+    filter_date = today
+    if date_str:
+        try:
+            filter_date = timezone.datetime.strptime(date_str, "%Y-%m-%d").date()
+        except ValueError:
+            filter_date = today
+
+    if request.method == "POST":
+        for student in students:
+            status = request.POST.get(f"attendance_{student.id}")
+            note = request.POST.get(f"note_{student.id}", "")
+            if status:
+                Attendance.objects.update_or_create(
+                    student=student,
+                    course=course,
+                    date=filter_date,
+                    defaults={
+                        "status": status,
+                        "note": note,
+                        "marked_by": request.user
+                    },
+                )
+        messages.success(request, f"Attendance saved for {filter_date}")
+        return redirect(f"/teacher-attendance/{course_id}/?date={filter_date}")
+    # Fetch attendance records for selected date
+    attendance_records_qs = Attendance.objects.filter(course=course, date=filter_date)
+    # Create a dictionary mapping student ID → status for the template
+    attendance_records = {record.student.id: record.status for record in attendance_records_qs}
+    # fetch last 10 history records for context
+    history = Attendance.objects.filter(course=course).order_by("-date")[:10].select_related("student")
+    context = {
+        "course": course,
+        "students": students,
+        "attendance_records": attendance_records,  # Now a dict: student_id -> status
+        "filter_date": filter_date,
+        "history": history,
+        "today": today
+    }
+    return render(request, "teacher/markAttendance.html", context)
+
+
+def attendanceHistory(request):
+    teacher_instance = User.objects.get(email=request.user.email)
+    history = Attendance.objects.filter(course__teacher=teacher_instance).order_by("-date")
+    context = {
+        "teacher_instance": teacher_instance,
+        "history": history
+    }
+    return render(request, "teacher/attendHistory.html", context)   
+
+
+def editAttendanceRecord(request, record_id):
+    # Ensure teacher is authenticated and owns the course
+    teacher_instance = get_object_or_404(User, email=request.user.email)
+    record = get_object_or_404(
+        Attendance,
+        id=record_id,
+        course__teacher=teacher_instance
+    )
+    if request.method == "POST":
+        status = request.POST.get("status")
+        note = request.POST.get("note", "")
+
+        record.status = status
+        record.note = note
+        record.save()
+        messages.success(request, f"Attendance updated for {record.student.user.get_full_name()} on {record.date}")
+        # Redirect to the course attendance page
+        return redirect(f'/teacher-attendance/{record.course.id}/')
+    else:
+        # Pre-fill the form with the current record data
+        context = {
+            "record": record
+        }
+        return render(request, "teacher/editAttendance.html", context)
+    
+
+def deleteAttendanceRecord(request, record_id):
+     # Ensure teacher is authenticated and owns the course
+    teacher_instance = get_object_or_404(User, email=request.user.email)
+    record = get_object_or_404(
+        Attendance,
+        id=record_id,
+        course__teacher=teacher_instance
+    )
+    if request.method == "POST":
+        course_id = record.course.id
+        record.delete()
+        messages.success(request, "Attendance record deleted successfully.")
+        return redirect(f'/teacher-attendance/{course_id}/')
+
+    return render(request, "teacher/deleteAttendance.html", {"record": record})
+
+
+def updateAttendanceRecord(request):
+    pass
 
 def teacherAnnouncement(request):
     user_instance = User.objects.get(email=request.user.email)
@@ -380,9 +498,6 @@ def adminDeleteDepartments(request, id):
     department = SchoolDepartment.objects.get(id=id)
     department.delete()
     return redirect('/admin-departments')
-
-def updateAttendanceRecord(request):
-    pass
 
 def adminProfile(request):
     user_instance = User.objects.get(email=request.user.email)  # now using custom user
