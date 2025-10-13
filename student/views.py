@@ -1,8 +1,8 @@
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
-from .models import Student, Courses, SchoolDepartment
+from .models import Student, Courses, SchoolDepartment, User
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from schoolManagement.models import Announcement
+from schoolManagement.models import Announcement, Attendance, Management
 from student.models import Student
 User = get_user_model()
 
@@ -34,7 +34,45 @@ def studentCourse(request):
     })
 
 def studentAttendance(request):
-    return render(request, 'student/attendance.html')
+    # Get student instance
+    student = Student.objects.filter(user=request.user).select_related('department').first()
+    if not student:
+        return render(request, 'student/courses.html', {"error": "No student record found"})
+    # All courses in the student's department
+    courses = Courses.objects.filter(department=student.department)
+    # Get selected course from query string (?course_id=)
+    selected_course_id = request.GET.get("course_id")
+    # Base queryset for attendance
+
+    attendance_qs = Attendance.objects.filter(student__user=request.user).select_related('course__teacher')
+
+    # If a course filter is applied
+    if selected_course_id:
+        attendance_qs = attendance_qs.filter(course_id=selected_course_id)
+    # Order records by most recent
+    attendance_records = attendance_qs.order_by('-date')
+    # Attendance history summary (recent distinct courses)
+    history = (
+        Attendance.objects
+        .filter(student__user=request.user)
+        .values(
+            'course__name',
+            'course__course_code',
+            'course__teacher__first_name',
+            'course__teacher__last_name'
+        )
+        .distinct()
+        .order_by('-date')[:10]
+    )
+    context = {
+        "attendance_record": attendance_records,
+        "history": history,
+        "student": student,
+        "courses": courses,
+        "selected_course_id": int(selected_course_id) if selected_course_id else None,
+    }
+    return render(request, 'student/attendance.html', context)
+
 
 def studentAnnouncement(request):
     user_instance = User.objects.get(email=request.user.email)

@@ -1,0 +1,144 @@
+{% extends 'teacher/base.html' %}
+{% load static %}
+{% block title %} Manage Attendance for — {{ course.name }} {% endblock %}
+
+{% block content %}
+
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+  <div class="container mt-1">
+    <div class="card shadow-lg rounded-3">
+      <div class="card-body">
+        <div class="container mt-4">
+
+          {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% endfor %}
+          {% endif %}
+
+          <h2 class="mb-3 justify-content-center">🗓 Manage Attendance </h2>
+
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h5 class="mb-3">Department: {{ course.department.name }}</h5>
+            </div>
+            <div class="">
+              <h5 class="mb-3">Course Name: {{ course.name }}</h5>
+            </div>
+          </div>
+
+          <!-- Date Filter -->
+          <form method="get" class="row g-2 align-items-center mb-4">
+            <div class="col-auto">
+              <label for="date" class="form-label mb-0">Select Date:</label>
+            </div>
+            <div class="col-auto">
+              <input type="date" id="date" name="date" class="form-control" value="{{ filter_date|date:'Y-m-d' }}">
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-outline-primary">View</button>
+            </div>
+          </form>
+
+          <!-- Attendance Table -->
+          <form method="post">
+            {% csrf_token %}
+            <table class="table table-striped align-middle">
+              <thead class="table-primary">
+                <tr>
+                  <th>Student ID</th>
+                  <th>Full Name</th>
+                  <th>Status ({{ filter_date|date:"M d, Y" }})</th>
+                  <th>Date</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                {% for student in students %}
+                <tr>
+                  <td>{{ student.user.student_id }}</td>
+                  <td>{{ student.user.first_name }} {{ student.user.last_name }}</td>
+                  <td>
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" name="attendance_{{ student.id }}"
+                        id="present_{{ student.id }}" value="Present" {% if attendance_records.student.id == "Present" %}
+                        checked {%endif %} required/>
+                      <label class="form-check-label" for="present_{{ student.id }}">Present</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input type="radio" class="form-check-input" name="attendance_{{ student.id }}"
+                        id="absent_{{ student.id }}" value="Absent" {% if attendance_records.student.id == "Absent" %}
+                        checked {% endif %} required/>
+                      <label class="form-check-label" for="absent_{{ student.id }}">Absent</label>
+                    </div>
+                  </td>
+                  <td>{{ filter_date|date:"M d, Y" }}</td>
+                </tr>
+
+                {% endfor %}
+                {% if students|length == 0 %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted">
+                    No students enrolled in this course.
+                  </td>
+                </tr>
+                {% endif %}
+
+              </tbody>
+            </table>
+
+            <div class="text-end">
+              <button type="submit" class="btn btn-success px-4">Save Attendance</button>
+              <a href="/attendance-history/" class="btn btn-info px-4">View Attendance History</a>
+              <a href="/teacher-attendance" class="btn btn-secondary px-4">Cancel</a>
+            </div>
+          </form>
+
+
+          <!-- Recent History -->
+<!--            
+          <h4 class="mt-5">📜 Recent Attendance History</h4>
+          {% if history %}
+          <div class="table-responsive mt-3">
+            <table class="table table-bordered align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Date</th>
+                  <th>Student</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for record in history %}
+                <tr>
+                  <td>{{ record.date|date:"M d, Y" }}</td>
+                  <td>{{ record.student.user.first_name }} {{ record.student.user.last_name }}</td>
+                  <td>
+                    {% if record.status == 'Present' %}
+                    <span class="badge bg-success">Present</span>
+                    {% else %}
+                    <span class="badge bg-danger">Absent</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="/teacher-attendance/edit/{{ record.id }}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="/teacher-attendance/delete/{{ record.id }}"
+                      class="btn btn-outline-danger btn-sm">Delete</a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted">No attendance records yet.</p>
+          {% endif %} -->
+        </div>
+      </div>
+    </div>
+</main>
+{% endblock %}
