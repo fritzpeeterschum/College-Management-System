@@ -6,6 +6,8 @@ from student.models import *
 from schoolManagement.models import *
 from django.contrib import messages
 from datetime import datetime
+from django.http import JsonResponse
+
 
 # Create your views here.
 def parentProfile(request):
@@ -103,3 +105,6 @@ def updateParentProfile(request, parent_id):
     else:
         messages.success(request, "Fail to Update")
         return redirect(f'/edit-parent-profile/{parent_id}')  
+    
+def parentProfile(request):
+    return JsonResponse({"message": "Parent profile endpoint working!"})

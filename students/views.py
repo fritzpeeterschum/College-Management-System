@@ -6,6 +6,20 @@ from schoolManagement.models import Announcement, Attendance, Management, ExamMa
 from student.models import Student
 User = get_user_model()
 from datetime import datetime
+from rest_framework import viewsets
+from .models import Student
+from .serializers import StudentSerializer
+from django.views.generic import ListView
+from .models import Student
+
+class StudentViewSet(viewsets.ModelViewSet):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+class StudentListView(ListView):
+    model = Student
+    template_name = "students/student_list.html"
+    context_object_name = "students"
 
 
 
@@ -57,6 +71,7 @@ def studentCourse(request):
         "current_semester":current_semester,
         "current_year":current_year
     })
+
 
 def studentAttendance(request):
     student_instance = Student.objects.get(user=User.objects.get(email=request.user.email))

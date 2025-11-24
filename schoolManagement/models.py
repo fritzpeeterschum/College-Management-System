@@ -1,7 +1,9 @@
 from django.db import models
 from smsAuth.models import *
-from student.models import *
+from students.models import *
 from django.utils import timezone
+
+
 
 # Create your models here.
 class Management(models.Model):

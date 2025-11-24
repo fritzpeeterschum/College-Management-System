@@ -1,6 +1,7 @@
 from django.urls import path
 from student import views
-
+from rest_framework.routers import DefaultRouter
+from .views import StudentViewSet
 
 
 urlpatterns = [
@@ -13,4 +14,11 @@ urlpatterns = [
     path('final-results', views.finalResults),
     path('edit-student-profile/<int:student_id>', views.editProfile),
     path('update-student-profile/<int:student_id>', views.updateProfile),
+    
+    
 ]
+
+router = DefaultRouter()
+router.register(r'students', StudentViewSet, basename='student')
+
+urlpatterns = router.urls

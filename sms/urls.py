@@ -22,7 +22,8 @@ from parent import urls
 from examination import urls
 from payment import urls
 from smsAuth import urls
-
+from django.views.generic import RedirectView
+from student import views
 
 urlpatterns = [
                
@@ -33,4 +34,11 @@ urlpatterns = [
     path('', include('payment.urls')),
     path('', include('smsAuth.urls')),
     path('admin/', admin.site.urls),
+    path('blog/', RedirectView.as_view(url='/blogs/', permanent=False)),
+    path('blogs/', include('blog.urls')),
+    path('api/v1/', include('students.urls')),
+    path('admin/', admin.site.urls),
+    path('api/v1/', include('student.urls')),
+    path('api/v1/', include('students.urls')),
+
 ]

@@ -17,14 +17,14 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
+# Quick-start development settings - unsuitable fo  r production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-g2#-k%h6ye$^zd#$(tg4be)09&l(ld0t4hlk78wqvr2^-u*12t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 'False'
 
 ALLOWED_HOSTS = ["*"]
 
@@ -46,7 +46,10 @@ INSTALLED_APPS = [
     'parent',
     'payment',
     'smsAuth',
-    'student'
+    'students',
+    'blog',
+    'rest_framework',
+    
 
 ]
 
@@ -90,7 +93,16 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+# DATABASES = {
+#             'default': {
+#                 'ENGINE': 'django.db.backends.mysql',
+#                 'NAME': 'schoolmanagementsystem',
+#                 'USER': 'root',
+#                 'PASSWORD': 'fosong rose',
+#                 'HOST': 'localhost',  # Or the IP address/hostname of your MySQL server
+#                 'PORT': '3306',      # Default MySQL port
+#             }
+#         }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
